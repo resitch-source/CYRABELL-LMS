@@ -397,10 +397,8 @@
     import { onKey } from './shared/utils.js';
     import { renderBookings, openBookingModal } from './modules/booking.js';
     import { renderCases } from './modules/casework.js';
-    import { renderAnalytics } from './modules/modules-bundle.js';
-    import { renderAdmin } from './modules/modules-bundle.js';
-    import { renderNotifications } from './modules/modules-bundle.js';
-    import { renderActionLog } from './modules/modules-bundle.js';
+    import { renderAnalytics, renderAdmin,
+             renderNotifications, renderActionLog } from './modules/modules-bundle.js';
 
     // ── API base check ──────────────────────────────────────────────────────
     if (!window.LEXFIRM_API_BASE && !document.querySelector('script[src]')?.src?.includes('DEPLOYMENT')) {
@@ -569,8 +567,7 @@
       onKey('ctrl+l',       () => navigate('#admin'));
       onKey('ctrl+a',       () => navigate('#analytics'));
       onKey('escape',       () => {
-        const { closeModal } = import('./shared/ui.js');
-        closeModal?.();
+        window.__lfCloseModal?.();
       });
 
       // ── Offline/online ────────────────────────────────────────────────────
@@ -687,9 +684,9 @@
       }
     })();
 
-    // Expose closeModal globally for inline onclick in modals
-    window.closeModal = () => import('./shared/ui.js').then(m => m.closeModal());
-    window.riskBadge  = (v) => import('./shared/ui.js').then(m => m.riskBadge(v));
+    // __lfCloseModal is registered by modules-bundle.js on load
+    // Alias for any legacy inline onclick='closeModal()'
+    window.closeModal = () => window.__lfCloseModal?.();
   </script>
 </body>
 </html>
