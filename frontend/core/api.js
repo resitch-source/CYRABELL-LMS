@@ -10,7 +10,7 @@
 
 // ─── CONFIG ──────────────────────────────────────────────────────────────────
 /** @description Replace with your deployed Apps Script /exec URL after deployment. */
-export const API_BASE = window.LEXFIRM_API_BASE || 'https://script.google.com/macros/s/AKfycbzzZguY-kjjnUHapSgUBFAPB9Fq7XwRzPjCmZ6hTv20zvILgjGQIynUipX2CiLX9RkgnA/exec';
+export const API_BASE = window.LEXFIRM_API_BASE || 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec';
 
 const CACHE_TTL_MS   = 30_000;   // 30s stale-while-revalidate
 const RETRY_DELAYS   = [500, 2000, 5000];
@@ -168,10 +168,20 @@ export async function apiPost(action, body = {}, opts = {}) {
   // Bust related cache entries on mutations
   bustCacheFor_(action);
 
+  // ── IMPORTANT: Apps Script Web Apps do NOT support JSON POST bodies from
+  //    cross-origin requests (CORS preflight strips the body).
+  //    We must send as application/x-www-form-urlencoded so Apps Script
+  //    receives values in e.parameter (same as GET query string).
+  //    Nested objects are JSON-stringified per key.
+  const formPayload = new URLSearchParams();
+  Object.entries(payload).forEach(([k, v]) => {
+    formPayload.append(k, typeof v === 'object' && v !== null ? JSON.stringify(v) : String(v ?? ''));
+  });
+
   const json = await fetchWithRetry(API_BASE, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: formPayload.toString()
   });
 
   if (!json.ok) throw new Error(json.error || 'api_error');
