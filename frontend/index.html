@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="LexFirm — Secure Legal Practice Management System">
+  <meta property="og:title" content="LexFirm Legal Management">
+  <meta property="og:description" content="AI-assisted legal case management with multi-channel notifications">
+  <title>LexFirm | Legal Management System</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Typography: Cormorant Garamond (display) + IBM Plex Mono + Libre Baskerville -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=IBM+Plex+Mono:wght@400;500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <script>
+    // Tailwind custom config
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink:        '#0F1419',
+            'ink-muted':'#5C6573',
+            parchment:  '#F5F1E8',
+            gold:       '#B8963E',
+            oxblood:    '#7A1F1F',
+            cream:      '#EDE9DC',
+          },
+          fontFamily: {
+            display: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+            body:    ['"Libre Baskerville"', 'Georgia', 'serif'],
+            mono:    ['"IBM Plex Mono"', 'monospace'],
+          },
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* ─── Base ─────────────────────────────────────────────────── */
+    html { scroll-behavior: smooth; }
+    body {
+      background-color: #F5F1E8;
+      background-image:
+        radial-gradient(ellipse at 20% 0%, rgba(184,150,62,0.06) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 100%, rgba(122,31,31,0.04) 0%, transparent 60%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='1' height='1' fill='%230F1419' fill-opacity='0.03'/%3E%3C/svg%3E");
+      min-height: 100vh;
+    }
+
+    /* ─── Typography ───────────────────────────────────────────── */
+    .font-display { font-family: 'Cormorant Garamond', Georgia, serif; }
+    .font-body    { font-family: 'Libre Baskerville', Georgia, serif; }
+    .font-mono    { font-family: 'IBM Plex Mono', monospace; }
+
+    /* ─── Buttons ──────────────────────────────────────────────── */
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.375rem;
+      background: #0F1419; color: #F5F1E8;
+      padding: 0.5rem 1.25rem; border-radius: 0.25rem;
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.8125rem;
+      letter-spacing: 0.025em; border: 1px solid transparent;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .btn-primary:hover  { background: #1e2732; }
+    .btn-primary:active { transform: scale(0.98); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 0.375rem;
+      background: transparent; color: #0F1419;
+      padding: 0.5rem 1.25rem; border-radius: 0.25rem;
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.8125rem;
+      border: 1px solid rgba(15,20,25,0.2); cursor: pointer; transition: all 0.15s;
+    }
+    .btn-secondary:hover { background: rgba(15,20,25,0.05); border-color: rgba(15,20,25,0.35); }
+    .btn-secondary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-danger {
+      display: inline-flex; align-items: center; gap: 0.375rem;
+      background: #7A1F1F; color: #F5F1E8;
+      padding: 0.5rem 1.25rem; border-radius: 0.25rem;
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.8125rem;
+      border: 1px solid transparent; cursor: pointer; transition: all 0.15s;
+    }
+    .btn-danger:hover { background: #9b2828; }
+
+    /* ─── Navigation ───────────────────────────────────────────── */
+    .nav-link {
+      display: flex; align-items: center; gap: 0.625rem;
+      padding: 0.625rem 1rem; border-radius: 0.25rem;
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem;
+      color: #5C6573; letter-spacing: 0.05em;
+      transition: all 0.15s; cursor: pointer; text-decoration: none;
+      border: 1px solid transparent;
+    }
+    .nav-link:hover   { background: rgba(15,20,25,0.05); color: #0F1419; }
+    .nav-link.active  { background: #0F1419; color: #F5F1E8; border-color: transparent; }
+    .nav-link .icon   { font-size: 0.875rem; width: 1.25rem; text-align: center; }
+
+    /* ─── Sidebar ──────────────────────────────────────────────── */
+    #sidebar {
+      width: 220px; flex-shrink: 0;
+      background: linear-gradient(180deg, #0F1419 0%, #161d25 100%);
+      border-right: 1px solid rgba(255,255,255,0.05);
+      overflow-y: auto;
+    }
+    #sidebar .nav-link       { color: rgba(245,241,232,0.55); }
+    #sidebar .nav-link:hover { background: rgba(245,241,232,0.07); color: #F5F1E8; }
+    #sidebar .nav-link.active{ background: rgba(184,150,62,0.18); color: #F5F1E8; border-color: rgba(184,150,62,0.3); }
+
+    /* ─── Filter chips ─────────────────────────────────────────── */
+    .filter-chip {
+      padding: 0.25rem 0.75rem; border-radius: 9999px;
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.6875rem;
+      border: 1px solid rgba(15,20,25,0.15); color: #5C6573;
+      cursor: pointer; transition: all 0.15s; background: transparent;
+    }
+    .filter-chip:hover  { border-color: rgba(15,20,25,0.3); color: #0F1419; }
+    .filter-chip.active { background: #0F1419; color: #F5F1E8; border-color: #0F1419; }
+
+    /* ─── Tab buttons ──────────────────────────────────────────── */
+    .tab-btn {
+      color: #5C6573; border-bottom: 2px solid transparent;
+      transition: all 0.15s; background: none; cursor: pointer;
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem;
+      letter-spacing: 0.08em; padding-bottom: 0.75rem;
+    }
+    .tab-btn:hover  { color: #0F1419; }
+    .tab-btn.active { color: #0F1419; border-bottom-color: #B8963E; }
+
+    /* ─── Slot picker ──────────────────────────────────────────── */
+    .slot-chip { cursor: pointer; }
+    .slot-label {
+      display: block; padding: 0.375rem 0.625rem;
+      border: 1px solid rgba(15,20,25,0.15); border-radius: 0.25rem;
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem;
+      color: #0F1419; text-align: center; transition: all 0.15s;
+    }
+    .slot-label:hover,
+    .slot-label.selected {
+      background: #0F1419; color: #F5F1E8; border-color: #0F1419;
+    }
+
+    /* ─── Login screen ─────────────────────────────────────────── */
+    #login-screen {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      padding: 2rem;
+    }
+    .login-card {
+      background: rgba(245,241,232,0.95); backdrop-filter: blur(8px);
+      border: 1px solid rgba(15,20,25,0.1); border-radius: 0.5rem;
+      width: 100%; max-width: 420px;
+      box-shadow: 0 20px 60px rgba(15,20,25,0.12);
+    }
+
+    /* ─── Scrollbar ────────────────────────────────────────────── */
+    ::-webkit-scrollbar       { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(15,20,25,0.15); border-radius: 3px; }
+
+    /* ─── Animations ───────────────────────────────────────────── */
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .view-enter { animation: fadeSlideIn 0.25s ease both; }
+
+    /* ─── Mobile sidebar toggle ────────────────────────────────── */
+    @media (max-width: 768px) {
+      #sidebar { position: fixed; left: -220px; top: 0; bottom: 0; z-index: 30; transition: left 0.25s; }
+      #sidebar.open { left: 0; }
+      #main-content { margin-left: 0 !important; }
+    }
+
+    /* ─── Offline banner ───────────────────────────────────────── */
+    #offline-banner {
+      display: none; background: #7A1F1F; color: #F5F1E8;
+      text-align: center; padding: 0.5rem;
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem;
+    }
+    body.offline #offline-banner { display: block; }
+  </style>
+</head>
+
+<body class="h-full font-body text-ink">
+
+  <!-- Offline banner -->
+  <div id="offline-banner">⚡ You are offline — changes will sync when reconnected</div>
+
+  <!-- ══ LOGIN SCREEN ══════════════════════════════════════════════════════ -->
+  <div id="login-screen">
+    <div class="login-card overflow-hidden">
+      <!-- Brand header -->
+      <div class="bg-ink px-8 py-8 text-center">
+        <div class="flex justify-center mb-3">
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+            <polygon points="24,2 46,14 46,34 24,46 2,34 2,14" fill="none" stroke="#B8963E" stroke-width="1.5"/>
+            <polygon points="24,8 40,17 40,31 24,40 8,31 8,17" fill="none" stroke="#B8963E" stroke-width="0.75" opacity="0.5"/>
+            <text x="24" y="28" text-anchor="middle" font-family="Cormorant Garamond, serif" font-size="14" font-weight="600" fill="#F5F1E8">LEX</text>
+          </svg>
+        </div>
+        <h1 class="font-display text-3xl text-parchment">LexFirm</h1>
+        <p class="font-mono text-xs text-parchment/50 mt-1 tracking-widest">LEGAL MANAGEMENT SYSTEM</p>
+      </div>
+
+      <!-- Auth forms -->
+      <div class="p-8">
+        <!-- Step 1: Email -->
+        <div id="auth-step-1">
+          <p class="font-body text-sm text-ink-muted mb-6 text-center">Enter your email to receive a one-time code</p>
+          <div class="space-y-4">
+            <div>
+              <label class="block font-mono text-xs uppercase tracking-widest text-ink-muted mb-1.5">Email Address</label>
+              <input id="auth-email" type="email" placeholder="name@firm.com"
+                class="w-full border border-ink/20 bg-white/60 rounded px-3 py-2.5
+                       font-body text-sm text-ink placeholder-ink-muted/40
+                       focus:outline-none focus:ring-2 focus:ring-gold/40 transition">
+            </div>
+            <button id="btn-request-otp" class="btn-primary w-full justify-center py-3">
+              Send Code
+            </button>
+          </div>
+
+          <!-- Demo quick-login panel -->
+          <div class="mt-6 pt-5 border-t border-ink/10">
+            <p class="font-mono text-xs text-ink-muted text-center mb-3 tracking-widest">DEMO ACCOUNTS</p>
+            <div class="space-y-1.5">
+              <button class="demo-login w-full text-left px-3 py-2 rounded border border-ink/10
+                hover:bg-gold/10 transition flex justify-between items-center"
+                data-email="admin@lexfirm.test" data-role="admin">
+                <span class="font-body text-sm">Admin</span>
+                <span class="font-mono text-xs text-ink-muted">admin@lexfirm.test</span>
+              </button>
+              <button class="demo-login w-full text-left px-3 py-2 rounded border border-ink/10
+                hover:bg-gold/10 transition flex justify-between items-center"
+                data-email="lawyer1@lexfirm.test" data-role="lawyer">
+                <span class="font-body text-sm">Lawyer</span>
+                <span class="font-mono text-xs text-ink-muted">lawyer1@lexfirm.test</span>
+              </button>
+              <button class="demo-login w-full text-left px-3 py-2 rounded border border-ink/10
+                hover:bg-gold/10 transition flex justify-between items-center"
+                data-email="maria@example.com" data-role="client">
+                <span class="font-body text-sm">Client</span>
+                <span class="font-mono text-xs text-ink-muted">maria@example.com</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: OTP -->
+        <div id="auth-step-2" class="hidden">
+          <p class="font-body text-sm text-ink-muted mb-1 text-center">Code sent to</p>
+          <p id="otp-email-display" class="font-mono text-sm text-ink text-center mb-6"></p>
+          <div class="space-y-4">
+            <div>
+              <label class="block font-mono text-xs uppercase tracking-widest text-ink-muted mb-1.5">6-Digit Code</label>
+              <input id="auth-otp" type="text" maxlength="6" placeholder="000000"
+                class="w-full border border-ink/20 bg-white/60 rounded px-3 py-2.5
+                       font-mono text-xl text-ink text-center tracking-widest
+                       focus:outline-none focus:ring-2 focus:ring-gold/40 transition">
+              <p id="otp-demo-hint" class="font-mono text-xs text-gold mt-1 text-center hidden"></p>
+            </div>
+            <button id="btn-verify-otp" class="btn-primary w-full justify-center py-3">
+              Verify & Login
+            </button>
+            <button id="btn-back-email" class="btn-secondary w-full justify-center">
+              ← Back
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <p class="text-center font-mono text-xs text-ink-muted pb-4 -mt-2">
+        v1.0.0 · ISO 27001 aligned · <span class="text-gold">●</span> Mock mode active
+      </p>
+    </div>
+  </div>
+
+  <!-- ══ MAIN APP SHELL ═════════════════════════════════════════════════════ -->
+  <div id="app-shell" class="hidden h-screen flex overflow-hidden">
+
+    <!-- Sidebar -->
+    <nav id="sidebar" class="flex flex-col">
+      <!-- Logo -->
+      <div class="px-5 py-6 border-b border-white/5 shrink-0">
+        <div class="flex items-center gap-3">
+          <svg width="32" height="32" viewBox="0 0 48 48" fill="none">
+            <polygon points="24,2 46,14 46,34 24,46 2,34 2,14" fill="none" stroke="#B8963E" stroke-width="1.5"/>
+            <text x="24" y="30" text-anchor="middle" font-family="Cormorant Garamond, serif" font-size="16" font-weight="600" fill="#F5F1E8">L</text>
+          </svg>
+          <div>
+            <p class="font-display text-xl text-parchment leading-none">LexFirm</p>
+            <p class="font-mono text-xs text-parchment/40 mt-0.5" id="user-role-label">—</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Nav links -->
+      <div class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+        <a class="nav-link" data-route="#dashboard">
+          <span class="icon">◈</span> Dashboard
+        </a>
+        <a class="nav-link" data-route="#bookings">
+          <span class="icon">📅</span> Bookings
+        </a>
+        <a class="nav-link" data-route="#cases">
+          <span class="icon">⚖</span> Cases
+        </a>
+        <a class="nav-link client-hide" data-route="#analytics">
+          <span class="icon">◐</span> Analytics
+        </a>
+        <a class="nav-link admin-only" data-route="#admin">
+          <span class="icon">⊞</span> Admin
+        </a>
+        <div class="my-3 border-t border-white/5"></div>
+        <a class="nav-link staff-only" data-route="#notifications">
+          <span class="icon">🔔</span> Notifications
+        </a>
+        <a class="nav-link staff-only" data-route="#audit-log">
+          <span class="icon">📋</span> Audit Log
+        </a>
+      </div>
+
+      <!-- User + logout -->
+      <div class="px-3 pb-4 border-t border-white/5 pt-3 shrink-0">
+        <div class="px-3 py-2 mb-2">
+          <p class="font-body text-xs text-parchment/70" id="sidebar-user-name">—</p>
+          <p class="font-mono text-xs text-parchment/40 truncate" id="sidebar-user-email">—</p>
+        </div>
+        <button id="btn-logout" class="nav-link w-full text-left">
+          <span class="icon">↩</span> Sign Out
+        </button>
+      </div>
+    </nav>
+
+    <!-- Main content area -->
+    <div id="main-content" class="flex-1 flex flex-col overflow-hidden">
+      <!-- Top bar -->
+      <header class="bg-parchment/80 backdrop-blur-sm border-b border-ink/8 px-6 py-3 flex items-center gap-4 shrink-0">
+        <button id="sidebar-toggle" class="md:hidden p-1.5 rounded hover:bg-ink/5 transition text-ink-muted">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M3 6h18M3 12h18M3 18h18"/>
+          </svg>
+        </button>
+
+        <div class="flex-1">
+          <h2 id="page-title" class="font-display text-xl text-ink leading-none">Dashboard</h2>
+        </div>
+
+        <!-- Offline/online indicator -->
+        <div id="connection-indicator" class="flex items-center gap-1.5 font-mono text-xs text-emerald-600">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span id="conn-label">Live</span>
+        </div>
+
+        <!-- AI insight pill -->
+        <div id="ai-pill" class="hidden items-center gap-2 bg-ink/5 rounded-full px-3 py-1">
+          <span class="text-xs text-gold">✦</span>
+          <span id="ai-pill-text" class="font-mono text-xs text-ink-muted"></span>
+        </div>
+      </header>
+
+      <!-- View outlet -->
+      <main id="main-outlet" class="flex-1 overflow-y-auto p-6">
+        <div class="flex items-center justify-center h-full">
+          <div class="animate-spin h-8 w-8 border-2 border-gold border-t-transparent rounded-full"></div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- ══ SETUP BANNER (shown before API_BASE configured) ═══════════════════ -->
+  <div id="setup-banner" class="hidden fixed bottom-6 right-6 z-50 max-w-sm">
+    <div class="bg-ink border border-gold/30 rounded-lg p-4 shadow-2xl">
+      <p class="font-mono text-xs text-gold mb-1">Setup Required</p>
+      <p class="font-body text-xs text-parchment/70 mb-3">
+        Replace <code class="text-gold">YOUR_DEPLOYMENT_ID</code> in <code>api.js</code>
+        with your Apps Script deployment URL, then run <code>setupInstall()</code> once.
+      </p>
+      <button onclick="document.getElementById('setup-banner').classList.add('hidden')"
+        class="font-mono text-xs text-gold/70 hover:text-gold">Dismiss</button>
+    </div>
+  </div>
+
+  <!-- ══ SCRIPTS ════════════════════════════════════════════════════════════ -->
+  <script type="module">
+    // ── Import all modules ──────────────────────────────────────────────────
+    import { initAuth, requestOtp, verifyOtp, quickLogin, logout, currentUser,
+             isAdmin, isLawyer, isClient } from './core/auth.js';
+    import { startRouter, addRoute, navigate, setOutlet } from './core/router.js';
+    import { setState } from './core/state.js';
+    import { toast, showSpinner } from './shared/ui.js';
+    import { onKey } from './shared/utils.js';
+    import { renderBookings, openBookingModal } from './modules/booking.js';
+    import { renderCases } from './modules/casework.js';
+    import { renderAnalytics } from './modules/modules-bundle.js';
+    import { renderAdmin } from './modules/modules-bundle.js';
+    import { renderNotifications } from './modules/modules-bundle.js';
+    import { renderActionLog } from './modules/modules-bundle.js';
+
+    // ── API base check ──────────────────────────────────────────────────────
+    if (!window.LEXFIRM_API_BASE && !document.querySelector('script[src]')?.src?.includes('DEPLOYMENT')) {
+      setTimeout(() => document.getElementById('setup-banner')?.classList.remove('hidden'), 2000);
+    }
+
+    // ── Auth flow ───────────────────────────────────────────────────────────
+    const emailInput  = document.getElementById('auth-email');
+    const otpInput    = document.getElementById('auth-otp');
+    const step1       = document.getElementById('auth-step-1');
+    const step2       = document.getElementById('auth-step-2');
+
+    document.getElementById('btn-request-otp')?.addEventListener('click', async () => {
+      const email = emailInput?.value?.trim();
+      if (!email) { toast('Enter your email', 'error'); return; }
+      const btn = document.getElementById('btn-request-otp');
+      btn.disabled = true; btn.textContent = 'Sending…';
+      try {
+        const res = await requestOtp(email);
+        step1.classList.add('hidden');
+        step2.classList.remove('hidden');
+        document.getElementById('otp-email-display').textContent = email;
+        if (res.demo_otp) {
+          const hint = document.getElementById('otp-demo-hint');
+          hint.textContent = `Demo code: ${res.demo_otp}`;
+          hint.classList.remove('hidden');
+        }
+        otpInput?.focus();
+      } catch (err) { toast(err.message, 'error'); }
+      finally { btn.disabled = false; btn.textContent = 'Send Code'; }
+    });
+
+    document.getElementById('btn-verify-otp')?.addEventListener('click', async () => {
+      const email = document.getElementById('otp-email-display')?.textContent;
+      const otp   = otpInput?.value?.trim();
+      const btn   = document.getElementById('btn-verify-otp');
+      btn.disabled = true; btn.textContent = 'Verifying…';
+      try {
+        await verifyOtp(email, otp);
+        bootApp();
+      } catch (err) { toast(err.message, 'error'); }
+      finally { btn.disabled = false; btn.textContent = 'Verify & Login'; }
+    });
+
+    document.getElementById('btn-back-email')?.addEventListener('click', () => {
+      step2.classList.add('hidden');
+      step1.classList.remove('hidden');
+    });
+
+    // OTP input: auto-verify on 6 digits
+    otpInput?.addEventListener('input', e => {
+      if (e.target.value.length === 6) document.getElementById('btn-verify-otp')?.click();
+    });
+
+    // Email enter key
+    emailInput?.addEventListener('keydown', e => {
+      if (e.key === 'Enter') document.getElementById('btn-request-otp')?.click();
+    });
+
+    // Demo quick-login
+    document.querySelectorAll('.demo-login').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const email = btn.dataset.email;
+        try {
+          await quickLogin(email);
+          bootApp();
+        } catch (err) { toast(err.message, 'error'); }
+      });
+    });
+
+    // ── Boot app after login ────────────────────────────────────────────────
+    async function bootApp() {
+      const user = currentUser();
+      if (!user) return;
+
+      // Show shell, hide login
+      document.getElementById('login-screen').classList.add('hidden');
+      document.getElementById('app-shell').classList.remove('hidden');
+
+      // Update sidebar user info
+      document.getElementById('sidebar-user-name').textContent  = user.email.split('@')[0];
+      document.getElementById('sidebar-user-email').textContent = user.email;
+      document.getElementById('user-role-label').textContent    = user.role.toUpperCase();
+
+      // Show/hide role-gated nav
+      document.querySelectorAll('.admin-only').forEach(el => el.style.display = isAdmin() ? '' : 'none');
+      document.querySelectorAll('.staff-only').forEach(el => el.style.display = isLawyer() ? '' : 'none');
+      document.querySelectorAll('.client-hide').forEach(el => el.style.display = isClient() ? 'none' : '');
+
+      // Register routes
+      const outlet = document.getElementById('main-outlet');
+      setOutlet(outlet);
+
+      addRoute('#dashboard', async () => {
+        setPageTitle('Dashboard');
+        if (isLawyer() || isAdmin()) {
+          await renderAnalytics(outlet);
+        } else {
+          await renderClientDashboard(outlet, user);
+        }
+      }, { guard: 'auth', title: 'Dashboard' });
+
+      addRoute('#bookings', async () => {
+        setPageTitle('Bookings');
+        await renderBookings(outlet);
+      }, { guard: 'auth', title: 'Bookings' });
+
+      addRoute('#cases', async () => {
+        setPageTitle('Cases');
+        await renderCases(outlet);
+      }, { guard: 'auth', title: 'Cases' });
+
+      addRoute('#analytics', async () => {
+        setPageTitle('Analytics');
+        await renderAnalytics(outlet);
+      }, { guard: 'auth', roles: ['admin','lawyer'], title: 'Analytics' });
+
+      addRoute('#admin', async () => {
+        setPageTitle('Administration');
+        await renderAdmin(outlet);
+      }, { guard: 'auth', roles: ['admin'], title: 'Admin' });
+
+      addRoute('#notifications', async () => {
+        setPageTitle('Notifications');
+        await renderNotifications(outlet);
+      }, { guard: 'auth', title: 'Notifications' });
+
+      addRoute('#audit-log', async () => {
+        setPageTitle('Audit Log');
+        await renderActionLog(outlet);
+      }, { guard: 'auth', roles: ['admin','lawyer'], title: 'Audit Log' });
+
+      addRoute('#login',        async () => { logout(); });
+      addRoute('#unauthorized', async () => {
+        outlet.innerHTML = '<div class="p-12 text-center"><p class="font-display text-2xl text-red-800">Access Denied</p></div>';
+      });
+      addRoute('#404', async () => {
+        outlet.innerHTML = '<div class="p-12 text-center"><p class="font-display text-2xl text-ink-muted">Page Not Found</p></div>';
+      });
+
+      // Start router
+      const initial = window.location.hash || '#dashboard';
+      startRouter(outlet);
+
+      // Wire sidebar nav
+      document.querySelectorAll('[data-route]').forEach(link => {
+        link.addEventListener('click', e => {
+          e.preventDefault();
+          navigate(link.dataset.route);
+        });
+      });
+
+      // Highlight active nav
+      window.addEventListener('lexfirm:router:navigated', e => {
+        document.querySelectorAll('[data-route]').forEach(l => {
+          l.classList.toggle('active', l.dataset.route === e.detail.hash);
+        });
+      });
+
+      // ── Keyboard shortcuts ────────────────────────────────────────────────
+      onKey('ctrl+k',       () => { navigate('#admin'); setTimeout(() => document.getElementById('global-search')?.focus(), 100); });
+      onKey('ctrl+n',       () => openBookingModal());
+      onKey('ctrl+shift+c', () => navigate('#cases'));
+      onKey('ctrl+d',       () => navigate('#dashboard'));
+      onKey('ctrl+b',       () => navigate('#bookings'));
+      onKey('ctrl+l',       () => navigate('#admin'));
+      onKey('ctrl+a',       () => navigate('#analytics'));
+      onKey('escape',       () => {
+        const { closeModal } = import('./shared/ui.js');
+        closeModal?.();
+      });
+
+      // ── Offline/online ────────────────────────────────────────────────────
+      const connDot   = document.querySelector('#connection-indicator span:first-child');
+      const connLabel = document.getElementById('conn-label');
+      window.addEventListener('lexfirm:api:offline', () => {
+        document.body.classList.add('offline');
+        if (connDot)  { connDot.className  = 'w-2 h-2 rounded-full bg-red-500'; }
+        if (connLabel) connLabel.textContent = 'Offline';
+      });
+      window.addEventListener('lexfirm:api:online', () => {
+        document.body.classList.remove('offline');
+        if (connDot)  { connDot.className  = 'w-2 h-2 rounded-full bg-emerald-500 animate-pulse'; }
+        if (connLabel) connLabel.textContent = 'Live';
+        toast('Connection restored — syncing…', 'success');
+      });
+
+      // ── Mobile sidebar ────────────────────────────────────────────────────
+      document.getElementById('sidebar-toggle')?.addEventListener('click', () => {
+        document.getElementById('sidebar')?.classList.toggle('open');
+      });
+
+      // ── Auth events ───────────────────────────────────────────────────────
+      window.addEventListener('lexfirm:auth:logout', () => {
+        document.getElementById('app-shell').classList.add('hidden');
+        document.getElementById('login-screen').classList.remove('hidden');
+      });
+      document.getElementById('btn-logout')?.addEventListener('click', () => logout());
+    }
+
+    // ── Client dashboard (simplified) ──────────────────────────────────────
+    async function renderClientDashboard(el, user) {
+      showSpinner(el, 'Loading your portal…');
+      const { Bookings, Cases } = await import('./core/api.js');
+      try {
+        const [bookings, cases] = await Promise.all([
+          Bookings.list({}),
+          Cases.list({}),
+        ]);
+        el.classList.add('view-enter');
+        el.innerHTML = `
+          <div class="space-y-6 max-w-3xl mx-auto">
+            <div class="pb-2">
+              <h1 class="font-display text-3xl text-ink">Welcome back</h1>
+              <p class="font-body text-sm text-ink-muted mt-1">${escHtml(user.email)}</p>
+            </div>
+
+            <!-- Quick stats -->
+            <div class="grid grid-cols-2 gap-4">
+              <div class="bg-white/60 border border-ink/10 rounded-lg p-5">
+                <p class="font-mono text-xs text-ink-muted uppercase tracking-widest">Active Cases</p>
+                <p class="font-display text-4xl text-ink mt-1">${cases.filter(c=>c.status!=='closed').length}</p>
+              </div>
+              <div class="bg-white/60 border border-ink/10 rounded-lg p-5">
+                <p class="font-mono text-xs text-ink-muted uppercase tracking-widest">Upcoming Bookings</p>
+                <p class="font-display text-4xl text-ink mt-1">${bookings.filter(b=>b.status==='confirmed').length}</p>
+              </div>
+            </div>
+
+            <!-- CTA -->
+            <div class="bg-ink rounded-lg p-6 text-parchment">
+              <p class="font-display text-xl mb-1">Need a consultation?</p>
+              <p class="font-body text-sm text-parchment/70 mb-4">Book a meeting with your assigned lawyer online or face-to-face.</p>
+              <button id="client-book-btn" class="inline-flex items-center gap-2 bg-gold text-ink font-mono text-sm px-4 py-2 rounded hover:bg-gold/90 transition">
+                Schedule a Meeting →
+              </button>
+            </div>
+
+            <!-- Recent bookings -->
+            ${bookings.length ? `
+            <div>
+              <p class="font-mono text-xs text-ink-muted uppercase tracking-widest mb-3">Your Bookings</p>
+              <div class="space-y-2">
+                ${bookings.slice(0,5).map(b => `
+                  <div class="bg-white/60 border border-ink/10 rounded px-4 py-3 flex justify-between items-center">
+                    <div>
+                      <p class="font-mono text-xs text-ink">${escHtml(b.booking_id)}</p>
+                      <p class="font-body text-sm text-ink-muted">${escHtml(b.date)} ${escHtml(b.time_slot)}</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                      ${b.meeting_link ? `<a href="${escHtml(b.meeting_link)}" target="_blank" class="font-mono text-xs text-gold hover:underline">Join →</a>` : ''}
+                      <span class="inline-block px-2 py-0.5 rounded text-xs font-mono ${b.status==='confirmed'?'bg-emerald-100 text-emerald-800':'bg-amber-100 text-amber-800'}">${escHtml(b.status)}</span>
+                    </div>
+                  </div>`).join('')}
+              </div>
+            </div>` : ''}
+          </div>`;
+
+        document.getElementById('client-book-btn')?.addEventListener('click', () => {
+          navigate('#bookings');
+          setTimeout(() => openBookingModal(), 300);
+        });
+      } catch (err) {
+        el.innerHTML = `<p class="p-8 text-red-700 font-body">${escHtml(err.message)}</p>`;
+      }
+    }
+
+    function setPageTitle(title) {
+      document.getElementById('page-title').textContent = title;
+      document.title = `LexFirm | ${title}`;
+      document.getElementById('main-outlet')?.classList.add('view-enter');
+    }
+
+    // ── escHtml inline helper (needed before modules load) ──────────────────
+    function escHtml(s) {
+      return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    // ── Init: restore session or show login ─────────────────────────────────
+    (async () => {
+      const user = await initAuth();
+      if (user) {
+        await bootApp();
+      }
+    })();
+
+    // Expose closeModal globally for inline onclick in modals
+    window.closeModal = () => import('./shared/ui.js').then(m => m.closeModal());
+    window.riskBadge  = (v) => import('./shared/ui.js').then(m => m.riskBadge(v));
+  </script>
+</body>
+</html>
