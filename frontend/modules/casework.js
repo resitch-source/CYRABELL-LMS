@@ -156,7 +156,7 @@ function buildCaseForm(clients = []) {
       </div>
 
       <div class="flex gap-3 justify-end border-t border-ink/10 pt-4">
-        <button type="button" onclick="closeModal()" class="btn-secondary">Cancel</button>
+        <button type="button" onclick="window.__lfCloseModal()" class="btn-secondary">Cancel</button>
         <button type="submit" id="case-submit-btn" class="btn-primary">Create Case</button>
       </div>
     </form>`;

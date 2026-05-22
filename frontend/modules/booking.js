@@ -137,7 +137,7 @@ function buildBookingForm(days, prefill = {}) {
         `<textarea name="notes" rows="3" class="w-full border border-ink/20 bg-white/60 rounded px-3 py-2 font-body text-sm text-ink focus:outline-none focus:ring-2 focus:ring-gold/40 transition" placeholder="Any specific topics or requirements…"></textarea>`
       )}
       <div class="flex gap-3 justify-end pt-2">
-        <button type="button" onclick="closeModal()" class="btn-secondary">Cancel</button>
+        <button type="button" onclick="window.__lfCloseModal()" class="btn-secondary">Cancel</button>
         <button type="submit" class="btn-primary">Request Booking</button>
       </div>
     </form>`;
@@ -289,7 +289,7 @@ export function openQrCheckinModal() {
       <input id="qr-manual-input" type="text" placeholder="CHECKIN:BK-XXXXXXXX"
         class="w-full border border-ink/20 bg-white/60 rounded px-3 py-2 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-gold/40">
       <div class="flex justify-end gap-2">
-        <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+        <button class="btn-secondary" onclick="window.__lfCloseModal()">Cancel</button>
         <button class="btn-primary" id="qr-submit-btn">Check In</button>
       </div>
     </div>`);
