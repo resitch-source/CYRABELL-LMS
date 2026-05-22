@@ -10,7 +10,7 @@
 
 // ─── CONFIG ──────────────────────────────────────────────────────────────────
 /** @description Replace with your deployed Apps Script /exec URL after deployment. */
-export const API_BASE = window.LEXFIRM_API_BASE || 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec';
+export const API_BASE = window.LEXFIRM_API_BASE || 'https://script.google.com/macros/s/AKfycbzzZguY-kjjnUHapSgUBFAPB9Fq7XwRzPjCmZ6hTv20zvILgjGQIynUipX2CiLX9RkgnA/exec';
 
 const CACHE_TTL_MS   = 30_000;   // 30s stale-while-revalidate
 const RETRY_DELAYS   = [500, 2000, 5000];
