@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="LexFirm — Secure Legal Practice Management System">
-  <meta property="og:title" content="LexFirm Legal Management">
+  <meta name="description" content="Cyrabell — Secure Legal Practice Management System">
+  <meta property="og:title" content="Cyrabell Legal Management">
   <meta property="og:description" content="AI-assisted legal case management with multi-channel notifications">
-  <title>LexFirm | Legal Management System</title>
+  <title>Cyrabell | Legal Management System</title>
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -203,7 +203,7 @@
             <text x="24" y="28" text-anchor="middle" font-family="Cormorant Garamond, serif" font-size="14" font-weight="600" fill="#F5F1E8">LEX</text>
           </svg>
         </div>
-        <h1 class="font-display text-3xl text-parchment">LexFirm</h1>
+        <h1 class="font-display text-3xl text-parchment">Cyrabell</h1>
         <p class="font-mono text-xs text-parchment/50 mt-1 tracking-widest">LEGAL MANAGEMENT SYSTEM</p>
       </div>
 
@@ -231,15 +231,15 @@
             <div class="space-y-1.5">
               <button class="demo-login w-full text-left px-3 py-2 rounded border border-ink/10
                 hover:bg-gold/10 transition flex justify-between items-center"
-                data-email="admin@lexfirm.test" data-role="admin">
+                data-email="admin@cyrabell.test" data-role="admin">
                 <span class="font-body text-sm">Admin</span>
-                <span class="font-mono text-xs text-ink-muted">admin@lexfirm.test</span>
+                <span class="font-mono text-xs text-ink-muted">admin@cyrabell.test</span>
               </button>
               <button class="demo-login w-full text-left px-3 py-2 rounded border border-ink/10
                 hover:bg-gold/10 transition flex justify-between items-center"
-                data-email="lawyer1@lexfirm.test" data-role="lawyer">
+                data-email="lawyer1@cyrabell.test" data-role="lawyer">
                 <span class="font-body text-sm">Lawyer</span>
-                <span class="font-mono text-xs text-ink-muted">lawyer1@lexfirm.test</span>
+                <span class="font-mono text-xs text-ink-muted">lawyer1@cyrabell.test</span>
               </button>
               <button class="demo-login w-full text-left px-3 py-2 rounded border border-ink/10
                 hover:bg-gold/10 transition flex justify-between items-center"
@@ -293,7 +293,7 @@
             <text x="24" y="30" text-anchor="middle" font-family="Cormorant Garamond, serif" font-size="16" font-weight="600" fill="#F5F1E8">L</text>
           </svg>
           <div>
-            <p class="font-display text-xl text-parchment leading-none">LexFirm</p>
+            <p class="font-display text-xl text-parchment leading-none">Cyrabell</p>
             <p class="font-mono text-xs text-parchment/40 mt-0.5" id="user-role-label">—</p>
           </div>
         </div>
@@ -401,7 +401,7 @@
              renderNotifications, renderActionLog } from './modules/modules-bundle.js';
 
     // ── API base check ──────────────────────────────────────────────────────
-    if (!window.LEXFIRM_API_BASE && !document.querySelector('script[src]')?.src?.includes('DEPLOYMENT')) {
+    if (!window.CYRABELL_API_BASE && !document.querySelector('script[src]')?.src?.includes('DEPLOYMENT')) {
       setTimeout(() => document.getElementById('setup-banner')?.classList.remove('hidden'), 2000);
     }
 
@@ -552,7 +552,7 @@
       });
 
       // Highlight active nav
-      window.addEventListener('lexfirm:router:navigated', e => {
+      window.addEventListener('cyrabell:router:navigated', e => {
         document.querySelectorAll('[data-route]').forEach(l => {
           l.classList.toggle('active', l.dataset.route === e.detail.hash);
         });
@@ -567,18 +567,18 @@
       onKey('ctrl+l',       () => navigate('#admin'));
       onKey('ctrl+a',       () => navigate('#analytics'));
       onKey('escape',       () => {
-        window.__lfCloseModal?.();
+        window.__cbCloseModal?.();
       });
 
       // ── Offline/online ────────────────────────────────────────────────────
       const connDot   = document.querySelector('#connection-indicator span:first-child');
       const connLabel = document.getElementById('conn-label');
-      window.addEventListener('lexfirm:api:offline', () => {
+      window.addEventListener('cyrabell:api:offline', () => {
         document.body.classList.add('offline');
         if (connDot)  { connDot.className  = 'w-2 h-2 rounded-full bg-red-500'; }
         if (connLabel) connLabel.textContent = 'Offline';
       });
-      window.addEventListener('lexfirm:api:online', () => {
+      window.addEventListener('cyrabell:api:online', () => {
         document.body.classList.remove('offline');
         if (connDot)  { connDot.className  = 'w-2 h-2 rounded-full bg-emerald-500 animate-pulse'; }
         if (connLabel) connLabel.textContent = 'Live';
@@ -591,7 +591,7 @@
       });
 
       // ── Auth events ───────────────────────────────────────────────────────
-      window.addEventListener('lexfirm:auth:logout', () => {
+      window.addEventListener('cyrabell:auth:logout', () => {
         document.getElementById('app-shell').classList.add('hidden');
         document.getElementById('login-screen').classList.remove('hidden');
       });
@@ -667,7 +667,7 @@
 
     function setPageTitle(title) {
       document.getElementById('page-title').textContent = title;
-      document.title = `LexFirm | ${title}`;
+      document.title = `Cyrabell | ${title}`;
       document.getElementById('main-outlet')?.classList.add('view-enter');
     }
 
@@ -684,9 +684,9 @@
       }
     })();
 
-    // __lfCloseModal is registered by modules-bundle.js on load
+    // __cbCloseModal is registered by modules-bundle.js on load
     // Alias for any legacy inline onclick='closeModal()'
-    window.closeModal = () => window.__lfCloseModal?.();
+    window.closeModal = () => window.__cbCloseModal?.();
   </script>
 </body>
 </html>
