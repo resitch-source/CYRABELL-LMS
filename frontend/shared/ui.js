@@ -95,13 +95,13 @@ export function openModal(titleHtml, bodyHtml, opts = {}) {
   document.body.classList.add('overflow-hidden');
   _modalEl.querySelector('#modal-backdrop').addEventListener('click', closeModal);
   _modalEl.querySelector('#modal-close').addEventListener('click', closeModal);
-  window.dispatchEvent(new CustomEvent('lexfirm:ui:modal:open'));
+  window.dispatchEvent(new CustomEvent('cyrabell:ui:modal:open'));
 }
 
 export function closeModal() {
   if (_modalEl) { _modalEl.remove(); _modalEl = null; }
   document.body.classList.remove('overflow-hidden');
-  window.dispatchEvent(new CustomEvent('lexfirm:ui:modal:close'));
+  window.dispatchEvent(new CustomEvent('cyrabell:ui:modal:close'));
 }
 
 export function modalBody() {
