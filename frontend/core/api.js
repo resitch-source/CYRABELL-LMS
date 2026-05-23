@@ -10,11 +10,11 @@
 
 // ─── CONFIG ──────────────────────────────────────────────────────────────────
 /** @description Replace with your deployed Apps Script /exec URL after deployment. */
-export const API_BASE = window.LEXFIRM_API_BASE || 'https://script.google.com/macros/s/AKfycbzzZguY-kjjnUHapSgUBFAPB9Fq7XwRzPjCmZ6hTv20zvILgjGQIynUipX2CiLX9RkgnA/exec';
+export const API_BASE = window.CYRABELL_API_BASE || 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec';
 
 const CACHE_TTL_MS   = 30_000;   // 30s stale-while-revalidate
 const RETRY_DELAYS   = [500, 2000, 5000];
-const OFFLINE_QUEUE_KEY = 'lf_offline_queue';
+const OFFLINE_QUEUE_KEY = 'cb_offline_queue';
 
 // ─── INTERNAL STATE ──────────────────────────────────────────────────────────
 const _cache   = new Map();   // key -> { data, ts }
@@ -39,12 +39,12 @@ function mkTrace() {
  * @returns {string}
  */
 function getToken() {
-  return sessionStorage.getItem('lf_token') || '';
+  return sessionStorage.getItem('cb_token') || '';
 }
 
 /** @description Emit global event for cross-module error visibility. */
 function emit(name, detail) {
-  window.dispatchEvent(new CustomEvent('lexfirm:' + name, { detail }));
+  window.dispatchEvent(new CustomEvent('cyrabell:' + name, { detail }));
 }
 
 // ─── CORE FETCH ──────────────────────────────────────────────────────────────
@@ -99,7 +99,7 @@ function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
  */
 export async function apiGet(action, params = {}, opts = {}) {
   const traceId = mkTrace();
-  const sessionId = opts.sessionId || sessionStorage.getItem('lf_session_id') || '';
+  const sessionId = opts.sessionId || sessionStorage.getItem('cb_session_id') || '';
   const qs = new URLSearchParams({
     action, token: getToken(), trace_id: traceId, session_id: sessionId,
     ...params
@@ -154,7 +154,7 @@ export async function apiGet(action, params = {}, opts = {}) {
  */
 export async function apiPost(action, body = {}, opts = {}) {
   const traceId = mkTrace();
-  const sessionId = opts.sessionId || sessionStorage.getItem('lf_session_id') || '';
+  const sessionId = opts.sessionId || sessionStorage.getItem('cb_session_id') || '';
   const payload = {
     action, token: getToken(), trace_id: traceId, session_id: sessionId, ...body
   };

@@ -42,7 +42,7 @@ export function setState(key, value) {
   _wildcards.forEach(fn => {
     try { fn(key, value, prev); } catch (e) { console.error('[state] wildcard error', e); }
   });
-  window.dispatchEvent(new CustomEvent('lexfirm:state:' + key, { detail: { value, prev } }));
+  window.dispatchEvent(new CustomEvent('cyrabell:state:' + key, { detail: { value, prev } }));
 }
 
 /**
@@ -79,4 +79,4 @@ export function resetState() {
 }
 
 // Expose on window for debugging in DevTools
-if (typeof window !== 'undefined') window.__lfState = { getState, setState, _store };
+if (typeof window !== 'undefined') window.__cbState = { getState, setState, _store };

@@ -11,9 +11,9 @@
 import { apiPost, apiGet } from './api.js';
 import { setState, getState } from './state.js';
 
-const TOKEN_KEY   = 'lf_token';
-const USER_KEY    = 'lf_user';
-const SESSION_KEY = 'lf_session_id';
+const TOKEN_KEY   = 'cb_token';
+const USER_KEY    = 'cb_user';
+const SESSION_KEY = 'cb_session_id';
 
 // ─── BOOTSTRAP ──────────────────────────────────────────────────────────────
 
@@ -85,7 +85,7 @@ export async function quickLogin(email) {
   console.log(`[TRACE:AUTH-LOGIN-FE-01] Quick login for ${email}`);
   const data = await apiPost('login', { email });
   _storeSession(data);
-  window.dispatchEvent(new CustomEvent('lexfirm:auth:login', { detail: data.user }));
+  window.dispatchEvent(new CustomEvent('cyrabell:auth:login', { detail: data.user }));
   return data.user;
 }
 
@@ -97,7 +97,7 @@ export async function quickLogin(email) {
 export async function register(fields) {
   const data = await apiPost('register', fields);
   _storeSession(data);
-  window.dispatchEvent(new CustomEvent('lexfirm:auth:login', { detail: data.user }));
+  window.dispatchEvent(new CustomEvent('cyrabell:auth:login', { detail: data.user }));
   return data.user;
 }
 
@@ -120,7 +120,7 @@ function _storeSession(data) {
  */
 export function logout() {
   clearSession();
-  window.dispatchEvent(new CustomEvent('lexfirm:auth:logout', {}));
+  window.dispatchEvent(new CustomEvent('cyrabell:auth:logout', {}));
   window.location.hash = '#login';
 }
 
@@ -156,12 +156,12 @@ export function requireRole(fn, minRole = 'any') {
   return (...args) => {
     const u = currentUser();
     if (!u) {
-      window.dispatchEvent(new CustomEvent('lexfirm:auth:unauthorized', {}));
+      window.dispatchEvent(new CustomEvent('cyrabell:auth:unauthorized', {}));
       throw new Error('not_authenticated');
     }
     const hierarchy = { admin: 3, lawyer: 2, client: 1, any: 0 };
     if ((hierarchy[u.role] || 0) < (hierarchy[minRole] || 0)) {
-      window.dispatchEvent(new CustomEvent('lexfirm:auth:unauthorized', { detail: { required: minRole } }));
+      window.dispatchEvent(new CustomEvent('cyrabell:auth:unauthorized', { detail: { required: minRole } }));
       throw new Error('insufficient_role');
     }
     return fn(...args);

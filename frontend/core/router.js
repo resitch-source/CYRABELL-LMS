@@ -43,7 +43,7 @@ export async function navigate(hash, params = {}) {
 
   // Auth guard
   if (route.guard === 'auth' && !isLoggedIn()) {
-    window.dispatchEvent(new CustomEvent('lexfirm:router:blocked', { detail: { hash, reason: 'not_authenticated' } }));
+    window.dispatchEvent(new CustomEvent('cyrabell:router:blocked', { detail: { hash, reason: 'not_authenticated' } }));
     return navigate('#login', {});
   }
 
@@ -51,7 +51,7 @@ export async function navigate(hash, params = {}) {
   if (route.roles?.length) {
     const user = currentUser();
     if (!user || !route.roles.includes(user.role)) {
-      window.dispatchEvent(new CustomEvent('lexfirm:router:blocked', { detail: { hash, reason: 'insufficient_role' } }));
+      window.dispatchEvent(new CustomEvent('cyrabell:router:blocked', { detail: { hash, reason: 'insufficient_role' } }));
       return navigate('#unauthorized', {});
     }
   }
@@ -65,11 +65,11 @@ export async function navigate(hash, params = {}) {
   _current = hash;
   _history.push({ hash, params, ts: Date.now() });
   if (window.location.hash !== hash) window.location.hash = hash;
-  if (route.title) document.title = `LexFirm | ${route.title}`;
+  if (route.title) document.title = `Cyrabell | ${route.title}`;
 
   try {
     await route.render(params);
-    window.dispatchEvent(new CustomEvent('lexfirm:router:navigated', { detail: { hash, params } }));
+    window.dispatchEvent(new CustomEvent('cyrabell:router:navigated', { detail: { hash, params } }));
   } catch (err) {
     console.error(`[TRACE:ROUTE-NAV-01] Render error on ${hash}:`, err);
     renderError(_outlet, err);
