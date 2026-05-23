@@ -127,8 +127,8 @@ function buildCasesView(cases, clientMap) {
 function buildCaseForm(clients = []) {
   const clientOptions = clients.map(c => [c.client_id, `${c.full_name} (${c.client_id})`]);
   const lawyerOptions = [
-    ['lawyer1@lexfirm.test','Atty. Benigno Reyes'],
-    ['lawyer2@lexfirm.test','Atty. Carmelita Santos'],
+    ['lawyer1@cyrabell.test','Atty. Benigno Reyes'],
+    ['lawyer2@cyrabell.test','Atty. Carmelita Santos'],
   ];
   return `
     <form id="case-form">
@@ -156,7 +156,7 @@ function buildCaseForm(clients = []) {
       </div>
 
       <div class="flex gap-3 justify-end border-t border-ink/10 pt-4">
-        <button type="button" onclick="window.__lfCloseModal()" class="btn-secondary">Cancel</button>
+        <button type="button" onclick="window.__cbCloseModal()" class="btn-secondary">Cancel</button>
         <button type="submit" id="case-submit-btn" class="btn-primary">Create Case</button>
       </div>
     </form>`;
@@ -250,7 +250,7 @@ async function handleCaseSubmit(e) {
     const c = await Cases.create(data);
     closeModal();
     toast(`Case ${c.case_id} created. AI predicts ${c.ai_prediction?.predicted_months} months.`, 'success', 6000);
-    window.dispatchEvent(new CustomEvent('lexfirm:case:created', { detail: c }));
+    window.dispatchEvent(new CustomEvent('cyrabell:case:created', { detail: c }));
     const outlet = document.getElementById('main-outlet');
     if (outlet) renderCases(outlet);
   } catch (err) {
@@ -372,7 +372,7 @@ function wireCaseTabs(row) {
       await Cases.update({ case_id: row.case_id, status });
       toast(`Case ${row.case_id} → ${status}`, 'success');
       closeModal();
-      window.dispatchEvent(new CustomEvent('lexfirm:case:updated', { detail: { case_id: row.case_id, status } }));
+      window.dispatchEvent(new CustomEvent('cyrabell:case:updated', { detail: { case_id: row.case_id, status } }));
     } catch (err) { toast(err.message, 'error'); }
   });
 
@@ -461,8 +461,8 @@ function wireCasesView(el, cases, clientMap) {
   });
 
   // Re-render on case updates
-  window.addEventListener('lexfirm:case:created', () => renderCases(el.closest('[id]') || el));
-  window.addEventListener('lexfirm:case:updated', () => renderCases(el.closest('[id]') || el));
+  window.addEventListener('cyrabell:case:created', () => renderCases(el.closest('[id]') || el));
+  window.addEventListener('cyrabell:case:updated', () => renderCases(el.closest('[id]') || el));
 }
 
 // Exposed for inline onclick

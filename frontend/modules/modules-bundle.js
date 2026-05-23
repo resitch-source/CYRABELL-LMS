@@ -63,7 +63,7 @@ function _openRegisterDocModal(caseId, parentEl) {
       ${fieldGroup('Document Name', textInput('name', '', 'placeholder="Motion to Dismiss.pdf"'))}
       ${fieldGroup('Google Drive URL', textInput('drive_url', '', 'placeholder="https://drive.google.com/…"'))}
       <div class="flex gap-3 justify-end pt-2">
-        <button type="button" onclick="window.__lfCloseModal()" class="btn-secondary">Cancel</button>
+        <button type="button" onclick="window.__cbCloseModal()" class="btn-secondary">Cancel</button>
         <button type="submit" class="btn-primary">Register</button>
       </div>
     </form>`);
@@ -136,7 +136,7 @@ function _openTimeModal(caseId, parentEl) {
       ${fieldGroup('Rate (₱/hr)', textInput('rate', '3500', 'type="number" min="0"'))}
       ${fieldGroup('Description', textInput('description', '', 'placeholder="Research and drafting…"'))}
       <div class="flex gap-3 justify-end pt-2">
-        <button type="button" onclick="window.__lfCloseModal()" class="btn-secondary">Cancel</button>
+        <button type="button" onclick="window.__cbCloseModal()" class="btn-secondary">Cancel</button>
         <button type="submit" class="btn-primary">Log Entry</button>
       </div>
     </form>`);
@@ -446,11 +446,11 @@ function _openNewClientModal() {
       ${fieldGroup('Phone',        textInput('phone',     '', 'placeholder="+63 917 123 4567"'))}
       ${fieldGroup('Risk Level',   selectInput('risk_level', [['low','Low'],['medium','Medium'],['high','High']]))}
       ${fieldGroup('Assigned Lawyer', selectInput('assigned_lawyer_email', [
-        ['lawyer1@lexfirm.test', 'Atty. Benigno Reyes'],
-        ['lawyer2@lexfirm.test', 'Atty. Carmelita Santos'],
+        ['lawyer1@cyrabell.test', 'Atty. Benigno Reyes'],
+        ['lawyer2@cyrabell.test', 'Atty. Carmelita Santos'],
       ]))}
       <div class="flex gap-3 justify-end pt-2">
-        <button type="button" onclick="window.__lfCloseModal()" class="btn-secondary">Cancel</button>
+        <button type="button" onclick="window.__cbCloseModal()" class="btn-secondary">Cancel</button>
         <button type="submit" class="btn-primary">Create Client</button>
       </div>
     </form>`);
@@ -556,6 +556,6 @@ export async function renderActionLog(el) {
 }
 
 // ── Global helper wired in index.html ────────────────────────────────────────
-// closeModal is exposed as window.__lfCloseModal so inline onclick in modals works
+// closeModal is exposed as window.__cbCloseModal so inline onclick in modals works
 import { closeModal as _closeModal } from '../shared/ui.js';
-window.__lfCloseModal = _closeModal;
+window.__cbCloseModal = _closeModal;

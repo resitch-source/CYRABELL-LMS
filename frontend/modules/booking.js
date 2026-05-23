@@ -97,15 +97,15 @@ function buildBookingsView(bookings, user) {
         ${bookings.length ? dataTable(cols, bookings, {
           rowAction: row => openBookingDetail(row),
           id: 'bookings-tbl'
-        }) : emptyState('No bookings yet', '📅', `<button onclick="window.dispatchEvent(new Event('lexfirm:open-booking-modal'))" class="btn-primary text-sm mt-3">Book a consultation</button>`)}
+        }) : emptyState('No bookings yet', '📅', `<button onclick="window.dispatchEvent(new Event('cyrabell:open-booking-modal'))" class="btn-primary text-sm mt-3">Book a consultation</button>`)}
       </div>
     </div>`;
 }
 
 function buildBookingForm(days, prefill = {}) {
   const lawyerOptions = [
-    ['lawyer1@lexfirm.test', 'Atty. Benigno Reyes'],
-    ['lawyer2@lexfirm.test', 'Atty. Carmelita Santos'],
+    ['lawyer1@cyrabell.test', 'Atty. Benigno Reyes'],
+    ['lawyer2@cyrabell.test', 'Atty. Carmelita Santos'],
   ];
   return `
     <form id="booking-form" class="space-y-1">
@@ -137,7 +137,7 @@ function buildBookingForm(days, prefill = {}) {
         `<textarea name="notes" rows="3" class="w-full border border-ink/20 bg-white/60 rounded px-3 py-2 font-body text-sm text-ink focus:outline-none focus:ring-2 focus:ring-gold/40 transition" placeholder="Any specific topics or requirements…"></textarea>`
       )}
       <div class="flex gap-3 justify-end pt-2">
-        <button type="button" onclick="window.__lfCloseModal()" class="btn-secondary">Cancel</button>
+        <button type="button" onclick="window.__cbCloseModal()" class="btn-secondary">Cancel</button>
         <button type="submit" class="btn-primary">Request Booking</button>
       </div>
     </form>`;
@@ -199,7 +199,7 @@ async function handleBookingSubmit(e) {
     const booking = await Bookings.create(data);
     closeModal();
     toast(`Booking ${booking.booking_id} submitted — awaiting confirmation`, 'success');
-    window.dispatchEvent(new CustomEvent('lexfirm:booking:created', { detail: booking }));
+    window.dispatchEvent(new CustomEvent('cyrabell:booking:created', { detail: booking }));
     // Refresh the view
     const outlet = document.getElementById('main-outlet');
     if (outlet) renderBookings(outlet);
@@ -263,7 +263,7 @@ async function updateStatus(id, status) {
     await Bookings.update({ booking_id: id, status });
     closeModal();
     toast(`Booking ${id} → ${status}`, 'success');
-    window.dispatchEvent(new CustomEvent('lexfirm:booking:updated', { detail: { booking_id: id, status } }));
+    window.dispatchEvent(new CustomEvent('cyrabell:booking:updated', { detail: { booking_id: id, status } }));
     const outlet = document.getElementById('main-outlet');
     if (outlet) renderBookings(outlet);
   } catch (err) { toast(err.message, 'error'); }
@@ -289,7 +289,7 @@ export function openQrCheckinModal() {
       <input id="qr-manual-input" type="text" placeholder="CHECKIN:BK-XXXXXXXX"
         class="w-full border border-ink/20 bg-white/60 rounded px-3 py-2 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-gold/40">
       <div class="flex justify-end gap-2">
-        <button class="btn-secondary" onclick="window.__lfCloseModal()">Cancel</button>
+        <button class="btn-secondary" onclick="window.__cbCloseModal()">Cancel</button>
         <button class="btn-primary" id="qr-submit-btn">Check In</button>
       </div>
     </div>`);
@@ -327,7 +327,7 @@ function wireBookingsView(el, bookings) {
   });
 
   // Listen for global open-modal event
-  window.addEventListener('lexfirm:open-booking-modal', () => openBookingModal(), { once: true });
+  window.addEventListener('cyrabell:open-booking-modal', () => openBookingModal(), { once: true });
 }
 
 // ─── MINIMAL QR SVG RENDERER ──────────────────────────────────────────────────
